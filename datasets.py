@@ -45,6 +45,9 @@ class CIFAR10_IMG(Dataset):
     def __len__(self):
         return len(self.filenames)
 
+    def num_classes(self):
+        return len(set(self.labels))
+
     def load_label_names(self, label_idx):
         label_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
         return label_names[label_idx]
@@ -65,6 +68,7 @@ if __name__ == '__main__':
     count_test = test_dataset.count_items()
     print(count_train)
     print(count_test)
+    print('Number of classes: ', train_dataset.num_classes())
     '''
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=6, shuffle=True)
