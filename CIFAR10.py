@@ -17,7 +17,7 @@ cifar10_test = torchvision.datasets.CIFAR10(
     train=False,
     download=DOWNLOAD
 )
-#输出数据集的信息
+# print out dataset info
 print(cifar10)
 print(cifar10_test)
 
@@ -26,7 +26,7 @@ train_annotations = []
 test_filenames = []
 test_annotations= []
 
-#cifar10 官方给出的解压函数
+# CIFAR10 official uncompression function
 def unpickle(file):
     import pickle
     with open(file, 'rb') as fo:
@@ -54,9 +54,9 @@ def cifar10_img(file_dir):
         for j in range(10000):
             img = np.reshape(data_dict[b'data'][j],(3,32,32))
             img = np.transpose(img,(1,2,0))
-            #通道顺序为RGB
+            # channel in RGB order
             img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-            #要改成不同的形式的文件只需要将文件后缀修改即可
+            # change suffix (.jpg) to save in different file format
             img_name = loc_1 + str(data_dict[b'labels'][j]) + str((i)*10000 + j) + '.jpg'
             annot_img_name = str(data_dict[b'labels'][j]) + str((i)*10000 + j) + '.jpg'
             img_annotations = data_dict[b'labels'][j]
@@ -75,9 +75,9 @@ def cifar10_img(file_dir):
     for m in range(10000):
         img = np.reshape(test_dict[b'data'][m], (3, 32, 32))
         img = np.transpose(img, (1, 2, 0))
-        # 通道顺序为RGB
+        # channel in RGB order
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        # 要改成不同的形式的文件只需要将文件后缀修改即可
+        # change suffix (.jpg) to save in different file format
         img_name = loc_2 + str(test_dict[b'labels'][m]) + str(10000 + m) + '.jpg'
         annot_img_name = str(test_dict[b'labels'][m]) + str(10000 + m) + '.jpg'
         img_annotations = test_dict[b'labels'][m]
@@ -91,7 +91,6 @@ if __name__ == '__main__':
 
     file_dir = './datasets/cifar-10-batches-py'
     cifar10_img(file_dir)
-    # cifar10_annotations(file_dir)
 
     train_annot_dict = {
         'images': train_filenames,
@@ -101,7 +100,6 @@ if __name__ == '__main__':
         'images':test_filenames,
         'categories':test_annotations
     }
-    # print(annotation)
 
     train_json = json.dumps(train_annot_dict)
     train_file = open('./datasets/annotations/cifar10_train.json', 'w')
