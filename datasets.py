@@ -45,15 +45,27 @@ class CIFAR10_IMG(Dataset):
     def __len__(self):
         return len(self.filenames)
 
-    def load_label_names(self, idx):
+    def load_label_names(self, label_idx):
         label_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
-        return label_names[idx]
+        return label_names[label_idx]
+
+    def count_items(self):
+        labels = self.labels
+        count = {}
+        label_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+        for item in labels:
+            count[label_names[item]] = count.get(label_names[item], 0) + 1
+        return count
 
 
 if __name__ == '__main__':
     train_dataset = CIFAR10_IMG('./datasets', train=True, transform=torchvision.transforms.ToTensor())
     test_dataset = CIFAR10_IMG('./datasets', train=False, transform=torchvision.transforms.ToTensor())
-
+    count_train = train_dataset.count_items()
+    count_test = test_dataset.count_items()
+    print(count_train)
+    print(count_test)
+    '''
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=6, shuffle=True)
 
@@ -68,3 +80,4 @@ if __name__ == '__main__':
             imgs = np.transpose(imgs, (1,2,0))
             plt.imshow(imgs)
             plt.show()
+    '''
