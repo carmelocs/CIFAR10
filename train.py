@@ -50,9 +50,9 @@ for epoch in range(EPOCH):
         optimizer.step()
 
         # print statistics
-        running_loss += loss.item() # accumulate 2000 mini-batches' loss
-        if i % 2000 == 1999: # print every 2000 mini-batches
-            print('[{}, {}] loss: {:.3f}'.format(epoch+1, i+1, running_loss / 2000))
+        running_loss += loss.item() # accumulate 100 mini-batches' loss
+        if i % 100 == 99: # print every 100 mini-batches
+            print('[{}, {}] loss: {:.3f}'.format(epoch+1, i+1, running_loss / 100))
             running_loss = 0.0
 
 print('Finish Training.')
@@ -74,6 +74,7 @@ correct = 0
 total = 0
 with torch.no_grad():
     for (images, labels) in test_loader:
+        images, labels = images.to(device), labels.to(device)
         outputs = net(images)
         _, predctions = outputs.max(-1)
         total += labels.size(0)
@@ -86,6 +87,7 @@ class_correct = list(0.0 for i in range(test_dataset.num_classes))
 class_total = list(0.0 for i in range(test_dataset.num_classes))
 with torch.no_grad():
     for (images, labels) in test_loader:
+        images, labels = images.to(device), labels.to(device)
         outputs = net(images)
         _, predictions = outputs.max(-1)
         c = (predictions == labels)

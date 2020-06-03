@@ -54,15 +54,15 @@ class NetGPU(nn.Module):
         super(NetGPU, self).__init__()
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=64,kernel_size=5)
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.conv2 = nn.Conv2d(128, 16, 5)
-        self.fc1 = nn.Linear(in_features=16*5*5, out_features=120)
+        self.conv2 = nn.Conv2d(64, 128, 5)
+        self.fc1 = nn.Linear(in_features=128*5*5, out_features=120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, num_classes)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16*5*5)
+        x = x.view(-1, 128*5*5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
