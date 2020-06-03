@@ -1,7 +1,7 @@
 import torch
 import torchvision
+import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
-#from torchvision import transforms, utils
 import numpy as np
 import json
 import matplotlib.pyplot as plt
@@ -13,7 +13,6 @@ class CIFAR10_IMG(Dataset):
         self.transform = transform
         self.target_transform = target_transform
         self.label_names = ('airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
 
         if self.train:
             file_annotation = root + '/annotations/cifar10_train.json'
@@ -33,6 +32,8 @@ class CIFAR10_IMG(Dataset):
         for i in range(num_data):
             self.filenames.append(data_dict['images'][i])
             self.labels.append(data_dict['categories'][i])
+        
+        self.num_classes = len(set(self.labels))
 
     def __getitem__(self, idx):
         img_name = self.img_folder + self.filenames[idx]
@@ -47,13 +48,6 @@ class CIFAR10_IMG(Dataset):
     def __len__(self):
         return len(self.filenames)
 
-    def num_classes(self):
-        return len(set(self.labels))
-
-    def load_label_names(self, label_idx):
-        label_names = self.label_names
-        return label_names[label_idx]
-
     def count_items(self):
         labels = self.labels
         count = {}
@@ -62,15 +56,41 @@ class CIFAR10_IMG(Dataset):
             count[label_names[item]] = count.get(label_names[item], 0) + 1
         return count
 
+def imshow(img):
+    img = img / 2 + 0.5 # unnormalize
+    np_img = img.numpy()
+    plt.imshow(np.transpose(np_img, (1,2,0))) # transposed to (height, width, channel)
+    plt.show()
 
 if __name__ == '__main__':
-    train_dataset = CIFAR10_IMG('./datasets', train=True, transform=torchvision.transforms.ToTensor())
-    test_dataset = CIFAR10_IMG('./datasets', train=False, transform=torchvision.transforms.ToTensor())
-    count_train = train_dataset.count_items()
-    count_test = test_dataset.count_items()
-    print(count_train)
-    print(count_test)
+    transform = transforms.Compose(
+        [transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+    )
+    train_dataset = CIFAR10_IMG('./datasets', train=True, transform=transform)
+    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=2)
+
+    test_dataset = CIFAR10_IMG('./datasets', train=False, transform=transform)
+    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=2)
+
+    label_list = []
+    image_list = []
+    for i in range(4):
+        images, labels = train_dataset[i]
+        image_list.append(images)
+        label_list.append(labels)
+
+    imshow(torchvision.utils.make_grid(image_list))
+    print('-'.join('%5s' % train_dataset.label_names[label_list[j]] for j in range(4)))
+
+    '''
+    print(train_dataset[0][0]) # print out tensor of the first image 
+    # print out number of samples for each category
+    print(train_dataset.count_items())
+    print(test_dataset.count_items())
+    
     print('Number of classes: ', train_dataset.num_classes())
+    '''
     '''
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=6, shuffle=True)
