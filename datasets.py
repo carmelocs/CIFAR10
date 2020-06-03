@@ -12,6 +12,8 @@ class CIFAR10_IMG(Dataset):
         self.train = train
         self.transform = transform
         self.target_transform = target_transform
+        self.label_names = ('airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
 
         if self.train:
             file_annotation = root + '/annotations/cifar10_train.json'
@@ -49,13 +51,13 @@ class CIFAR10_IMG(Dataset):
         return len(set(self.labels))
 
     def load_label_names(self, label_idx):
-        label_names = ('airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+        label_names = self.label_names
         return label_names[label_idx]
 
     def count_items(self):
         labels = self.labels
         count = {}
-        label_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+        label_names = self.label_names
         for item in labels:
             count[label_names[item]] = count.get(label_names[item], 0) + 1
         return count
