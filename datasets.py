@@ -49,7 +49,7 @@ class CIFAR10_IMG(Dataset):
         return len(set(self.labels))
 
     def load_label_names(self, label_idx):
-        label_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+        label_names = ('airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
         return label_names[label_idx]
 
     def count_items(self):
