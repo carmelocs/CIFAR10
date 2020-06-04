@@ -72,7 +72,8 @@ class NetGPU(nn.Module):
 if __name__ =='__main__':
     torch.manual_seed(1)    # reproducible
     #net = ConvNet()
-    net = Net(num_classes=10)
+    net = NetGPU(num_classes=10)
+    print(net)
     data = torch.rand(4,3,32,32)
     output = net(data)
     print(output.shape)
