@@ -76,14 +76,14 @@ for epoch in range(EPOCH):
 
         # print statistics
         running_loss += loss.item() # accumulate 100 mini-batches' loss
+        _, predctions = outputs.max(-1)
+        running_total += labels.size(0)
+        running_correct += (predctions == labels).sum().item()
         if i % 100 == 99: # print every 100 mini-batches
-            _, predctions = outputs.max(-1)
-            running_total += labels.size(0)
-            running_correct += (predctions == labels).sum().item()
-            print('[{}, {}] loss: {:.3f}, accuracy: {}%'.format(epoch+1, i+1, running_loss/100, 100*running_correct/running_total))
+            print('[{}, {}] loss: {:.3f}, accuracy: {:.2f}%'.format(epoch+1, i+1, running_loss/100, 100*running_correct/running_total))
             running_loss = 0.0
+            running_total = 0
             running_correct = 0
-            runnint_total = 0
 
 print('Finish Training.')
 
