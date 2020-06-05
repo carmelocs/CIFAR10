@@ -5,7 +5,7 @@ from cv2 import cv2
 import os
 import json
 
-DOWNLOAD = False
+DOWNLOAD = True
 
 cifar10 = torchvision.datasets.CIFAR10(
     root='datasets',
