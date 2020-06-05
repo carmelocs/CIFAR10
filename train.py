@@ -1,6 +1,7 @@
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import torchvision.models as models
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
@@ -16,7 +17,8 @@ BATCH_SIZE = 64
 
 transform = transforms.Compose(
         [transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                 std=[0.229, 0.224, 0.225])]
     )
 
 train_dataset = CIFAR10_IMG(root=ROOT, train=True, transform=transform)
@@ -27,12 +29,16 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print(device)
+'''
 if torch.cuda.is_available():
     net = NetGPU(num_classes=train_dataset.num_classes)
 else:
     net = Net(num_classes=train_dataset.num_classes)
+'''
+net = models.resnet18()
 net.to(device)
 print(net)
+
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=LR, momentum=MOMENTUM)
 
@@ -56,6 +62,7 @@ for epoch in range(EPOCH):
             running_loss = 0.0
 
 print('Finish Training.')
+
 '''
 dataiter = iter(test_loader)
 images, labels = dataiter.next()
