@@ -7,13 +7,27 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from datasets import CIFAR10_IMG, imshow
 from model import Net, NetGPU
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--batchSize', type=int, default=64, help='input batch size')
+parser.add_argument(
+    '--workers', type=int, help='number of data loading workers', default=4)
+parser.add_argument(
+    '--epoch', type=int, default=100, help='number of epochs to train for')
+parser.add_argument('--dataset', type=str, default='./datasets', help='dataset path')
+parser.add_argument('--lr', type=float, default=1e-5, help='learning rate')
+parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 
-ROOT = './datasets'
-LR = 0.001
-MOMENTUM = 0.9
-EPOCH = 2
-BATCH_SIZE = 64
+opt = parser.parse_args()
+
+ROOT = opt.dataset
+BATCH_SIZE = opt.batchSize
+WORKERS = opt.workers
+EPOCH = opt.epoch
+LR = opt.lr
+MOMENTUM = opt.momentum
 
 transform = transforms.Compose(
         [transforms.ToTensor(),
@@ -22,7 +36,7 @@ transform = transforms.Compose(
     )
 
 train_dataset = CIFAR10_IMG(root=ROOT, train=True, transform=transform)
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=WORKERS)
 
 test_dataset = CIFAR10_IMG(root=ROOT, train=False, transform=transform)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
